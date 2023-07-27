@@ -55,7 +55,7 @@ export const routes = [
 
             const { id } = req.params
             database.delete('users', id)
-            console.log(req.params)
+
             return res.writeHead(204).end()
         }
     }
