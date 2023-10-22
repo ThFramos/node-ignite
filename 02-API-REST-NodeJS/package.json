@@ -23,7 +23,7 @@
     "knex": "^2.5.1",
     "pg": "^8.11.3",
     "tsx": "^3.12.7",
-    "zod": "^3.21.4"
+    "zod": "^3.22.3"
   },
   "devDependencies": {
     "@rocketseat/eslint-config": "^2.1.0",
