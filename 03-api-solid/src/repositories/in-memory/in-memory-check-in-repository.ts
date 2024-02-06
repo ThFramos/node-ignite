@@ -23,6 +23,25 @@ export class InMemoryCheckInRepository implements CheckInInterfaceRepository {
     return checkinOnSameDay
   }
 
+  async findById(id: string) {
+    const checkIn = this.checkIns.find((item) => item.id === id)
+
+    if (!checkIn) {
+      return null
+    }
+    return checkIn
+  }
+
+  async findManyByUserId(userId: string, page: number) {
+    return this.checkIns
+      .filter((checkIn) => checkIn.user_id === userId)
+      .slice((page - 1) * 20, page * 20)
+  }
+
+  async getUserCountFromMetrics(userId: string) {
+    return this.checkIns.filter((checkIn) => checkIn.user_id === userId).length
+  }
+
   async create(data: Prisma.CheckInUncheckedCreateInput) {
     const checkIn = {
       id: randomUUID(),
@@ -34,6 +53,17 @@ export class InMemoryCheckInRepository implements CheckInInterfaceRepository {
 
     this.checkIns.push(checkIn)
 
+    return checkIn
+  }
+
+  async save(checkIn: CheckIn) {
+    const foundCheckin = this.checkIns.findIndex(
+      (item) => item.id === checkIn.id,
+    )
+
+    if (foundCheckin >= 0) {
+      this.checkIns[foundCheckin] = checkIn
+    }
     return checkIn
   }
 }
