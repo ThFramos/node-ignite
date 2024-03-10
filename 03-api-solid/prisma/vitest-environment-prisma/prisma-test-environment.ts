@@ -1,13 +1,34 @@
+import 'dotenv/config'
+
+import { randomUUID } from 'node:crypto'
+import { PrismaClient } from "prisma/prisma-client"
 import { Environment } from 'vitest'
+
+const prisma = new PrismaClient()
+
+function generateDatabaseURL(schema: string) {
+    if (!process.env.DATABASE_URL) {
+        throw new Error('Please provide a DATABASE_URL environment variable.')
+    }
+
+    const url = new URL(process.env.DATABASE_URL ?? "");
+    url.searchParams.set('schema', schema)
+    return url.toString()
+}
 
 export default <Environment>{
     name: 'prisma',
     async setup() {
-        console.log('Setup')
+
+        const schema = randomUUID()
+        const dataBaseURL = generateDatabaseURL(schema);
+
+        process.env.DATABASE_URL = dataBaseURL;
 
         return {
             async teardown() {
-                console.log('Teardown')
+                prisma.$executeRawUnsafe(`DROP SCHEMA IF EXISTS "${schema}" CASCADE`);
+                prisma.$disconnect();
             },
         }
     },
