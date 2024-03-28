@@ -22,7 +22,7 @@ export async function authenticate(
       email,
       password,
     })
-    console.log({ user })
+
     const token = await reply.jwtSign({}, {
       sign: {
         sub: user.id

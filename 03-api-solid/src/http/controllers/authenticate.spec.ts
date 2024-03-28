@@ -3,7 +3,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from
 import { app } from "../../app";
 
 
-describe("Register (e2e)", () => {
+describe("Authenticate (e2e)", () => {
 
     beforeAll(async () => {
         await app.ready()
@@ -13,9 +13,8 @@ describe("Register (e2e)", () => {
         await app.close()
     })
 
-    it("should be able to register", async () => {
-
-        const response = await request(app.server)
+    it("should be able to autheticate", async () => {
+        await request(app.server)
             .post('/users')
             .send({
                 name: "teste2",
@@ -23,7 +22,16 @@ describe("Register (e2e)", () => {
                 password: "123456789"
             })
 
-        expect(response.statusCode).toEqual(201)
+        const response = await request(app.server)
+            .post('/session')
+            .send({
+                email: "teste2@teste.com",
+                password: "123456789"
+            })
+        expect(response.statusCode).toEqual(200)
+        expect(response.body).toEqual({
+            token: expect.any(String),
+        })
 
     })
 
